@@ -1,0 +1,25 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compileOnSave": false,
+  "files": [],
+  "references": [
+    {
+      "path": "./apps/reviews"
+    },
+    {
+      "path": "./libs/common"
+    },
+    {
+      "path": "./libs/models"
+    },
+    {
+      "path": "./apps/feedback-service"
+    },
+    {
+      "path": "./apps/uploads"
+    }
+  ],
+  "compilerOptions": {
+    "strict": true
+  }
+}
