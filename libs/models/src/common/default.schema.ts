@@ -23,22 +23,22 @@ export class DefaultSchema {
   deletedAt?: Date;
 
   @Prop({
-    type: mongoose.Schema.Types.ObjectId,
+    // type: mongoose.Schema.Types.ObjectId,
     // ref: User?.name ?? "User",
   })
-  createdBy?: string | mongoose.Schema.Types.ObjectId;
+  createdBy?: string;
 
   @Prop({
-    type: mongoose.Schema.Types.ObjectId,
+    // type: mongoose.Schema.Types.ObjectId,
     // ref: User?.name ?? "User",
   })
-  deletedBy?: string | mongoose.Schema.Types.ObjectId;
+  deletedBy?: string;
 
   @Prop({
-    type: mongoose.Schema.Types.ObjectId,
+    // type: mongoose.Schema.Types.ObjectId,
     // ref: User?.name ?? "User",
   })
-  updatedBy?: string | mongoose.Schema.Types.ObjectId;
+  updatedBy?: string;
 
   @Prop()
   tenant?: string;
