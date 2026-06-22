@@ -22,22 +22,27 @@ export class FeedbackController {
   async createWithImage(@Body() body: CreateFeedbackDto) {
     const { ImageUrl, ...feedbackDto } = body as any;
 
-    const feedback = await this.service.create(
-      feedbackDto as CreateFeedbackDto,
-    );
+    const feedback = await this.service.create({
+      ...feedbackDto,
+      ImageUrls: Array.isArray(ImageUrl) ? ImageUrl : [],
+    } as any as CreateFeedbackDto);
 
-    if (!ImageUrl) {
+    if (!Array.isArray(ImageUrl) || ImageUrl.length === 0) {
       return { feedback };
     }
 
-    const feedbackImage = await this.feedbackImageService.create({
-      FeedbackId: feedback._id,
-      ImageUrl,
-    });
+    const feedbackImages = await Promise.all(
+      ImageUrl.map((imageUrl: string) =>
+        this.feedbackImageService.create({
+          FeedbackId: feedback._id,
+          ImageUrl: imageUrl,
+        }),
+      ),
+    );
 
     return {
       feedback,
-      feedbackImage,
+      feedbackImages,
     };
   }
 

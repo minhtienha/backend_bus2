@@ -15,10 +15,24 @@ export enum FeedbackStatus {
   COMPLETED = 'COMPLETED',
 }
 
+export class GeoLocation {
+  @Prop({ type: String, enum: ['Point'], default: 'Point' })
+  type!: string;
+
+  @Prop({ type: [Number], required: true })
+  coordinates!: number[];
+
+  @Prop({ type: String, required: true })
+  address!: string;
+}
+
 export type FeedbackDocument = Feedback & mongoose.Document;
 
 @Schema({ timestamps: true })
 export class Feedback extends DefaultSchema {
+  @Prop({ type: [String], default: [] })
+  ImageUrls!: string[];
+
   @Prop({
     required: true,
     type: String,
@@ -38,8 +52,23 @@ export class Feedback extends DefaultSchema {
   })
   Status!: FeedbackStatus;
 
+  @Prop({
+    type: GeoLocation,
+    required: true,
+  })
+  Location!: GeoLocation;
+
+  @Prop({ type: String })
+  FullName?: string;
+
+  @Prop({ type: String })
+  PhoneNumber?: string;
+
+  @Prop({ type: String })
+  Email?: string;
+
   @Prop({ type: Boolean, default: false })
-  IsPublic!: boolean;
+  IsAnonymous!: boolean;
 }
 
 export const FeedbackSchema = SchemaFactory.createForClass(Feedback);

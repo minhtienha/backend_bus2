@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
 import { DefaultSchema } from '../common/default.schema.js';
+import { FeedbackStatus } from '../feedbacks/schema.js';
 
 export type FeedbackHistoryDocument = FeedbackHistory & Document;
 
@@ -15,17 +16,17 @@ export class FeedbackHistory extends DefaultSchema {
   FeedbackId!: mongoose.Types.ObjectId;
 
   @Prop({
-    // type: mongoose.Schema.Types.ObjectId,
-    // ref: 'User',
-    required: false,
-  })
-  ActorId?: string;
-
-  @Prop({
     required: true,
     type: String,
+    enum: Object.values(FeedbackStatus),
   })
-  Message!: string;
+  Status!: FeedbackStatus;
+
+  @Prop({ type: String })
+  Note?: string;
+
+  @Prop({ type: String, default: 'Đơn vị quản lý' })
+  ActionBy!: string;
 }
 
 export const FeedbackHistorySchema =
