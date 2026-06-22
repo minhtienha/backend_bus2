@@ -3,9 +3,10 @@ import mongoose from 'mongoose';
 import { DefaultSchema } from '../common/default.schema.js';
 
 export enum FeedbackCategory {
-  LOST_AND_FOUND = 'LOST_AND_FOUND',
-  COMPLAINT = 'COMPLAINT',
-  SUGGESTION = 'SUGGESTION',
+  SERVICE_QUALITY = 'SERVICE_QUALITY',
+  COMMENDATION = 'COMMENDATION',
+  INFRASTRUCTURE = 'INFRASTRUCTURE',
+  ROUTE_AND_SCHEDULE = 'ROUTE_AND_SCHEDULE',
   OTHER = 'OTHER',
 }
 
