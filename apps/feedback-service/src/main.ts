@@ -5,12 +5,14 @@
 
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { InjectUserInterceptor } from '@bus/common';
 import { AppModule } from './app/app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
+  app.useGlobalInterceptors(new InjectUserInterceptor());
   const port = process.env.PORT || 3003;
   await app.listen(port);
   Logger.log(

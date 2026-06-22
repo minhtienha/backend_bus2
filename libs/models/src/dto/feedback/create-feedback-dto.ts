@@ -40,6 +40,10 @@ export const CreateFeedbackZodSchema = z.object({
     .optional(),
 
   IsAnonymous: z.boolean().default(false),
+
+  createdBy: z.string().optional(),
+
+  updatedBy: z.string().optional(),
 });
 
 export class CreateFeedbackDto extends createZodDto(CreateFeedbackZodSchema) {}
