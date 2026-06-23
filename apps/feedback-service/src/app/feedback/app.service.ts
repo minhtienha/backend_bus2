@@ -19,8 +19,20 @@ export class FeedbackService {
     return (await feedback.save()).toObject();
   }
 
-  async findAll() {
-    return await this.model.find().sort({ createdAt: -1 }).exec();
+  async findAll(page: number, limit: number, search: string) {
+    const skip = (page - 1) * limit;
+    const query = search
+      ? {
+          name: { $regex: search as string, $options: 'i' },
+        }
+      : {};
+
+    const feedbacks = await this.model.find(query).skip(skip).limit(+limit);
+
+    if (!feedbacks.length) {
+      throw new HttpException('Không tìm thấy phản ảnh/góp ý nào', 404);
+    }
+    return feedbacks;
   }
 
   async findOne(id: string) {

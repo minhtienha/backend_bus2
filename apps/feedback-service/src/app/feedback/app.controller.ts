@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { CreateFeedbackDto, Feedback } from '@bus/models';
 import { FeedbackService } from './app.service';
@@ -47,8 +48,12 @@ export class FeedbackController {
   }
 
   @Get()
-  async findAll() {
-    return this.service.findAll();
+  async findAll(
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+    @Query('search') search: any,
+  ) {
+    return this.service.findAll(page, limit, search);
   }
 
   @Get(':id')
