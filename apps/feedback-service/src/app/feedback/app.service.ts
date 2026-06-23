@@ -38,7 +38,18 @@ export class FeedbackService {
     if (!feedbacks.length) {
       throw new HttpException('Không tìm thấy phản ảnh/góp ý nào', 404);
     }
-    return feedbacks;
+
+    const total = await this.model.countDocuments(query);
+
+    return {
+      data: feedbacks,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   async findOne(id: string) {
