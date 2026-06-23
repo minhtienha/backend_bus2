@@ -7,6 +7,12 @@ import {
   type FeedbackDocument,
 } from '@bus/models';
 
+interface FindAllParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+}
+
 @Injectable()
 export class FeedbackService {
   constructor(
@@ -19,7 +25,7 @@ export class FeedbackService {
     return (await feedback.save()).toObject();
   }
 
-  async findAll(page: number, limit: number, search: string) {
+  async findAll({ page = 1, limit = 10, search = '' }: FindAllParams = {}) {
     const skip = (page - 1) * limit;
     const query = search
       ? {
