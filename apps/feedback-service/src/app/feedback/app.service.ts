@@ -42,7 +42,7 @@ export class FeedbackService {
     const total = await this.model.countDocuments(query);
 
     return {
-      data: feedbacks,
+      feedbacks,
       pagination: {
         page,
         limit,

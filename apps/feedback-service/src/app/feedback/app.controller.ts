@@ -53,7 +53,7 @@ export class FeedbackController {
     @Query('limit') limit: number,
     @Query('search') search: any,
   ) {
-    return this.service.findAll(page, limit, search);
+    return this.service.findAll({ page, limit, search });
   }
 
   @Get(':id')
