@@ -61,6 +61,11 @@ export class FeedbackController {
     return this.service.findOne(id);
   }
 
+  @Get('categories')
+  getFeedbackCategories() {
+    return this.service.getFeedbackCategories();
+  }
+
   @Patch(':id')
   async update(
     @Param('id') id: string,

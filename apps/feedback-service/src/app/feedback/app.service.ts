@@ -13,6 +13,14 @@ interface FindAllParams {
   search?: string;
 }
 
+export enum FeedbackCategory {
+  SERVICE_QUALITY = 'SERVICE_QUALITY',
+  COMMENDATION = 'COMMENDATION',
+  INFRASTRUCTURE = 'INFRASTRUCTURE',
+  ROUTE_AND_SCHEDULE = 'ROUTE_AND_SCHEDULE',
+  OTHER = 'OTHER',
+}
+
 @Injectable()
 export class FeedbackService {
   constructor(
@@ -50,6 +58,24 @@ export class FeedbackService {
         totalPages: Math.ceil(total / limit),
       },
     };
+  }
+
+  getFeedbackCategories() {
+    return Object.values(FeedbackCategory).map((value) => ({
+      value: value,
+      label: this.getCategoryLabel(value),
+    }));
+  }
+
+  private getCategoryLabel(category: FeedbackCategory): string {
+    const labels: Record<FeedbackCategory, string> = {
+      [FeedbackCategory.SERVICE_QUALITY]: 'Chất lượng dịch vụ, vi phạm',
+      [FeedbackCategory.COMMENDATION]: 'Người tốt, việc tốt, khen thưởng',
+      [FeedbackCategory.INFRASTRUCTURE]: 'Cơ sở hạ tầng, trạm xe buýt',
+      [FeedbackCategory.ROUTE_AND_SCHEDULE]: 'Tuyến xe, thời gian hoạt động',
+      [FeedbackCategory.OTHER]: 'Khác',
+    };
+    return labels[category] || category;
   }
 
   async findOne(id: string) {
