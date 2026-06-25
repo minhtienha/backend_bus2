@@ -33,8 +33,11 @@ import { FeedbackImageService } from './feedback-image/app.service';
       { name: FeedbackHistory.name, schema: FeedbackHistorySchema },
     ]),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', '..', '..', 'public'),
+      rootPath: join(process.cwd(), 'apps', 'public'),
       serveRoot: '/public',
+      serveStaticOptions: {
+        index: false,
+      },
     }),
   ],
   controllers: [
