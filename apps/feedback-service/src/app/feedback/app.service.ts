@@ -63,19 +63,48 @@ export class FeedbackService {
   getFeedbackCategories() {
     return Object.values(FeedbackCategory).map((value) => ({
       value: value,
-      label: this.getCategoryLabel(value),
+      ...this.getCategoryDetails(value),
     }));
   }
 
-  private getCategoryLabel(category: FeedbackCategory): string {
-    const labels: Record<FeedbackCategory, string> = {
-      [FeedbackCategory.SERVICE_QUALITY]: 'Chất lượng dịch vụ, vi phạm',
-      [FeedbackCategory.COMMENDATION]: 'Người tốt, việc tốt, khen thưởng',
-      [FeedbackCategory.INFRASTRUCTURE]: 'Cơ sở hạ tầng, trạm xe buýt',
-      [FeedbackCategory.ROUTE_AND_SCHEDULE]: 'Tuyến xe, thời gian hoạt động',
-      [FeedbackCategory.OTHER]: 'Khác',
+  private getCategoryDetails(category: FeedbackCategory): {
+    label: string;
+    icon: string;
+  } {
+    const baseUrl = 'https://feedback-service-93if.onrender.com';
+
+    const categoryConfig: Record<
+      FeedbackCategory,
+      { label: string; icon: string }
+    > = {
+      [FeedbackCategory.SERVICE_QUALITY]: {
+        label: 'Chất lượng dịch vụ, vi phạm',
+        icon: `${baseUrl}/public/icons/ic_service_quality.png`,
+      },
+      [FeedbackCategory.COMMENDATION]: {
+        label: 'Người tốt, việc tốt, khen thưởng',
+        icon: `${baseUrl}/public/icons/ic_commendation.png`,
+      },
+      [FeedbackCategory.INFRASTRUCTURE]: {
+        label: 'Cơ sở hạ tầng, trạm xe buýt',
+        icon: `${baseUrl}/public/icons/ic_infrastructure.png`,
+      },
+      [FeedbackCategory.ROUTE_AND_SCHEDULE]: {
+        label: 'Tuyến xe, thời gian hoạt động',
+        icon: `${baseUrl}/public/icons/ic_route_schedule.png`,
+      },
+      [FeedbackCategory.OTHER]: {
+        label: 'Khác',
+        icon: `${baseUrl}/public/icons/ic_other.png`,
+      },
     };
-    return labels[category] || category;
+
+    return (
+      categoryConfig[category] || {
+        label: category,
+        icon: `${baseUrl}/public/icons/ic_default.png`,
+      }
+    );
   }
 
   async findOne(id: string) {

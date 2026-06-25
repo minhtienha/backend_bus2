@@ -12,6 +12,7 @@
     "@nestjs/mongoose": "^11.0.4",
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.0",
+    "@nestjs/serve-static": "^5.0.5",
     "@types/lodash": "^4.17.24",
     "@types/multer-gridfs-storage": "^4.0.8",
     "class-transformer": "^0.5.1",

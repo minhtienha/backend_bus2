@@ -70,6 +70,9 @@ export class Feedback extends DefaultSchema {
 
   @Prop({ type: Boolean, default: false })
   IsAnonymous!: boolean;
+
+  @Prop({ type: String })
+  deviceToken?: string;
 }
 
 export const FeedbackSchema = SchemaFactory.createForClass(Feedback);

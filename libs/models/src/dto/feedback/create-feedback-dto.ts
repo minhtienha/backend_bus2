@@ -44,6 +44,8 @@ export const CreateFeedbackZodSchema = z.object({
   createdBy: z.string().optional(),
 
   updatedBy: z.string().optional(),
+
+  deviceToken: z.string().optional(),
 });
 
 export class CreateFeedbackDto extends createZodDto(CreateFeedbackZodSchema) {}

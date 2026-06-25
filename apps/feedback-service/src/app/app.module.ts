@@ -3,6 +3,8 @@ import { APP_PIPE } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CommonModule } from '@bus/common';
 import { ZodValidationPipe } from 'nestjs-zod';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 import {
   Feedback,
@@ -30,6 +32,10 @@ import { FeedbackImageService } from './feedback-image/app.service';
       { name: FeedbackImage.name, schema: FeedbackImageSchema },
       { name: FeedbackHistory.name, schema: FeedbackHistorySchema },
     ]),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '..', '..', 'public'),
+      serveRoot: '/public',
+    }),
   ],
   controllers: [
     FeedbackController,
