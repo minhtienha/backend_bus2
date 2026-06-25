@@ -56,14 +56,14 @@ export class FeedbackController {
     return this.service.findAll({ page, limit, search });
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.service.findOne(id);
-  }
-
   @Get('categories')
   getFeedbackCategories() {
     return this.service.getFeedbackCategories();
+  }
+
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    return this.service.findOne(id);
   }
 
   @Patch(':id')
