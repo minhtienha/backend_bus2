@@ -38,7 +38,7 @@ export class Feedback extends DefaultSchema {
     required: true,
     type: String,
     enum: Object.values(FeedbackCategory),
-    default: FeedbackCategory.SUGGESTION,
+    default: FeedbackCategory.SERVICE_QUALITY,
   })
   Category!: FeedbackCategory;
 
