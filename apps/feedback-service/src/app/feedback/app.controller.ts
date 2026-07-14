@@ -8,19 +8,19 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { CreateFeedbackDto, Feedback } from '@bus/models';
+import { HttpService } from '@nestjs/axios';
+import { lastValueFrom } from 'rxjs';
+import { CreateFeedbackDto, FeedbackStatus } from '@bus/models';
 import { FeedbackService } from './app.service';
 import { FeedbackImageService } from '../feedback-image/app.service';
-
-import { AppService } from '../../../../users/src/app/app.service';
-import { FirebaseService } from '../firebase/firebase.service';
+import { FirebaseService } from '@bus/common';
 
 @Controller('feedback')
 export class FeedbackController {
   constructor(
     public readonly service: FeedbackService,
     private readonly feedbackImageService: FeedbackImageService,
-    private readonly userService: UserService,
+    private readonly httpService: HttpService,
     private readonly firebaseService: FirebaseService,
   ) {}
 
@@ -46,25 +46,22 @@ export class FeedbackController {
       ),
     );
 
-    // --- 3. LOGIC GỬI THÔNG BÁO TỚI ADMIN ---
     try {
-      // 3.1. Lấy tất cả token của Admin
-      const adminTokens = await this.userService.getAdminTokens();
-
-      // 3.2. Soạn nội dung thông báo
-      const title = 'Có phản hồi/góp ý mới!';
-      // Lấy đoạn đầu nội dung feedback làm body (nếu có trường Content/Name tùy schema của bạn)
-      const content =
-        (feedback as any).name || 'Vui lòng mở ứng dụng để xem chi tiết.';
-
-      // 3.3. Bắn thông báo
-      await this.firebaseService.sendNotificationToTokens(
-        adminTokens,
-        title,
-        content,
+      const response = await lastValueFrom(
+        this.httpService.get('http://localhost:3001/api/users/admin-tokens'),
       );
-    } catch (error) {
-      console.error('Lỗi quá trình lấy token hoặc gửi FCM:', error);
+
+      const adminTokens = response.data.tokens;
+
+      if (adminTokens && adminTokens.length > 0) {
+        await this.firebaseService.sendNotificationToTokens(
+          adminTokens,
+          'Có phản hồi mới từ ứng dụng!',
+          `Phản hồi từ: ${feedbackDto.name || 'Người dùng'}. Vui lòng kiểm tra.`,
+        );
+      }
+    } catch (error: any) {
+      console.error('Lỗi khi gọi API users hoặc gửi FCM:', error.message);
     }
 
     return {
@@ -97,7 +94,28 @@ export class FeedbackController {
     @Param('id') id: string,
     @Body() body: Partial<CreateFeedbackDto>,
   ) {
-    return this.service.update(id, body);
+    const updatedFeedback = await this.service.update(id, body);
+
+    try {
+      if (
+        body.Status === FeedbackStatus.COMPLETED &&
+        updatedFeedback.deviceToken
+      ) {
+        const title = 'Phản hồi đã được giải quyết ✅';
+        const content =
+          'Vấn đề bạn phản ánh đã được hệ thống xử lý hoàn tất. Cảm ơn sự đóng góp của bạn!';
+
+        await this.firebaseService.sendNotificationToTokens(
+          [updatedFeedback.deviceToken],
+          title,
+          content,
+        );
+      }
+    } catch (error: any) {
+      console.error('Lỗi khi gửi thông báo FCM cho User:', error.message);
+    }
+
+    return updatedFeedback;
   }
 
   @Delete(':id')

@@ -1,13 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User, UserDocument } from '@bus/models';
+import { User } from '@bus/models';
 
 @Injectable()
 export class AppService {
   constructor(
-    @InjectModel(User.name)
-    private readonly userModel: Model<UserDocument>,
+    @InjectModel(User.name) private readonly userModel: Model<User>,
   ) {}
 
   async syncUserAndToken(
@@ -16,34 +15,30 @@ export class AppService {
     name: string,
     fcmToken: string,
   ) {
-    const user = await this.userModel.findOne({ uid });
+    let user = await this.userModel.findOne({ uid });
 
     if (user) {
-      if (fcmToken && !user.fcmTokens?.includes(fcmToken)) {
-        user.fcmTokens = user.fcmTokens || [];
+      if (fcmToken && !user.fcmTokens.includes(fcmToken)) {
         user.fcmTokens.push(fcmToken);
         await user.save();
       }
       return user;
     }
 
-    const newUser = new this.userModel({
+    user = new this.userModel({
       uid,
       email,
       name,
-      role: 'user',
+      role: 'USER',
       fcmTokens: fcmToken ? [fcmToken] : [],
     });
 
-    return newUser.save();
+    return user.save();
   }
 
   async getAdminTokens(): Promise<string[]> {
-    const admins = await this.userModel.find({ role: 'admin' });
-
-    // Gộp tất cả fcmTokens của các admin thành 1 mảng duy nhất
+    const admins = await this.userModel.find({ role: 'ADMIN' });
     const tokens = admins.flatMap((admin) => admin.fcmTokens || []);
-
     return [...new Set(tokens)];
   }
 }

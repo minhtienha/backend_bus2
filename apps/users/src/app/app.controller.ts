@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller('users')
@@ -21,5 +21,11 @@ export class AppController {
       body.name,
       body.fcmToken,
     );
+  }
+
+  @Get('admin-tokens')
+  async getAdminTokens() {
+    const tokens = await this.appService.getAdminTokens();
+    return { tokens };
   }
 }

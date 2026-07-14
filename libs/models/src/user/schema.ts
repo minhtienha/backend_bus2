@@ -5,14 +5,17 @@ export type UserDocument = User & Document;
 
 @Schema({ timestamps: true })
 export class User extends Document {
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   uid!: string;
 
   @Prop()
   email!: string;
 
-  @Prop({ default: 'user' })
-  role?: string;
+  @Prop()
+  name!: string;
+
+  @Prop({ default: 'USER' })
+  role!: string;
 
   @Prop({ type: [String], default: [] })
   fcmTokens!: string[];
