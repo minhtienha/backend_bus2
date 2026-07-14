@@ -48,7 +48,9 @@ export class FeedbackController {
 
     try {
       const response = await lastValueFrom(
-        this.httpService.get('http://localhost:3001/api/users/admin-tokens'),
+        this.httpService.get(
+          'https://users-ecsj.onrender.com/api/users/admin-tokens',
+        ),
       );
 
       const adminTokens = response.data.tokens;
@@ -92,13 +94,13 @@ export class FeedbackController {
   @Patch(':id')
   async update(
     @Param('id') id: string,
-    @Body() body: Partial<CreateFeedbackDto>,
+    @Body() data: Partial<CreateFeedbackDto>,
   ) {
-    const updatedFeedback = await this.service.update(id, body);
+    const updatedFeedback = await this.service.update(id, data);
 
     try {
       if (
-        body.Status === FeedbackStatus.COMPLETED &&
+        data.Status === FeedbackStatus.COMPLETED &&
         updatedFeedback.deviceToken
       ) {
         const title = 'Phản hồi đã được giải quyết ✅';
