@@ -15,7 +15,7 @@ export class AppService {
 
     if (!timetable) {
       throw new HttpException(
-        'Không tìm thấy thời gian cho tuyến',
+        'Không tìm thấy tuyến xe này',
         HttpStatus.NOT_FOUND,
       );
     }

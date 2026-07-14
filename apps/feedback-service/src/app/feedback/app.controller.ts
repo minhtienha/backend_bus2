@@ -12,11 +12,16 @@ import { CreateFeedbackDto, Feedback } from '@bus/models';
 import { FeedbackService } from './app.service';
 import { FeedbackImageService } from '../feedback-image/app.service';
 
+import { AppService } from '../../../../users/src/app/app.service';
+import { FirebaseService } from '../firebase/firebase.service';
+
 @Controller('feedback')
 export class FeedbackController {
   constructor(
     public readonly service: FeedbackService,
     private readonly feedbackImageService: FeedbackImageService,
+    private readonly userService: UserService,
+    private readonly firebaseService: FirebaseService,
   ) {}
 
   @Post()
@@ -40,6 +45,27 @@ export class FeedbackController {
         }),
       ),
     );
+
+    // --- 3. LOGIC GỬI THÔNG BÁO TỚI ADMIN ---
+    try {
+      // 3.1. Lấy tất cả token của Admin
+      const adminTokens = await this.userService.getAdminTokens();
+
+      // 3.2. Soạn nội dung thông báo
+      const title = 'Có phản hồi/góp ý mới!';
+      // Lấy đoạn đầu nội dung feedback làm body (nếu có trường Content/Name tùy schema của bạn)
+      const content =
+        (feedback as any).name || 'Vui lòng mở ứng dụng để xem chi tiết.';
+
+      // 3.3. Bắn thông báo
+      await this.firebaseService.sendNotificationToTokens(
+        adminTokens,
+        title,
+        content,
+      );
+    } catch (error) {
+      console.error('Lỗi quá trình lấy token hoặc gửi FCM:', error);
+    }
 
     return {
       feedback,

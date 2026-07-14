@@ -26,6 +26,9 @@
     },
     {
       "path": "./apps/timetable"
+    },
+    {
+      "path": "./apps/users"
     }
   ],
   "compilerOptions": {

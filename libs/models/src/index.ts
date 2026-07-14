@@ -5,3 +5,4 @@ export * from './feedback-histories/index.js';
 export * from './feedback-images/index.js';
 export * from './location/index.js';
 export * from './timetable/index.js';
+export * from './user/index.js';
