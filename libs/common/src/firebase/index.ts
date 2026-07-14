@@ -1,2 +1,2 @@
-export * from './firebase.module';
-export * from './firebase.service';
+export * from './firebase.module.js';
+export * from './firebase.service.js';
