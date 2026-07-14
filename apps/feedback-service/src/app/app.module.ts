@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
 import { APP_PIPE } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
-import { CommonModule } from '@bus/common';
+import { CommonModule, FirebaseModule } from '@bus/common';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
@@ -29,6 +29,7 @@ import { FeedbackImageService } from './feedback-image/app.service';
   imports: [
     CommonModule,
     HttpModule,
+    FirebaseModule,
     MongooseModule.forFeature([
       { name: Feedback.name, schema: FeedbackSchema },
       { name: FeedbackImage.name, schema: FeedbackImageSchema },
