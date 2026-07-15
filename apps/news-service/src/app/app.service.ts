@@ -1,9 +1,11 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
   News,
   NewsDocument,
+  Topic,
+  TopicDocument,
   TopicFollower,
   TopicFollowerDocument,
   CreateNewsDto,
@@ -17,12 +19,18 @@ export class AppService {
   constructor(
     @InjectModel(News.name)
     private readonly newsModel: Model<NewsDocument>,
+    @InjectModel(Topic.name)
+    private readonly topicModel: Model<TopicDocument>,
     @InjectModel(TopicFollower.name)
     private readonly topicFollowerModel: Model<TopicFollowerDocument>,
     private readonly firebaseService: FirebaseService,
   ) {}
 
   async createNews(dto: CreateNewsDto) {
+    const exisTopic = await this.topicModel.findById(dto.topicId);
+    if (!exisTopic) {
+      throw new NotFoundException('Chủ đề (Topic) không tồn tại');
+    }
     const news = new this.newsModel(dto);
     const savedNews = await news.save();
 
