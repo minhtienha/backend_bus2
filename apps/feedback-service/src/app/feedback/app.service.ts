@@ -206,9 +206,27 @@ export class FeedbackService {
 
     if (data.Status && updated?.deviceToken) {
       try {
-        const title = data.notificationTitle;
-        const content = data.notificationContent;
+        let title = 'Cập nhật phản hồi';
+        switch (updated.Status) {
+          case 'PROCESSING':
+            title = 'Phản hồi đang được xử lý 🕒';
+            break;
+          case 'COMPLETED':
+            title = 'Phản hồi đã giải quyết xong ✅';
+            break;
+          case 'REJECTED':
+            title = 'Không thể xử lý phản hồi ❌';
+            break;
+          default:
+            title = `Cập nhật trạng thái phản hồi: ${updated.Status}`;
+        }
 
+        // Lấy content từ Postman truyền lên
+        const content =
+          data.notificationContent ||
+          'Trạng thái phản hồi của bạn đã được thay đổi.';
+
+        // Xử lý ép kiểu chuỗi an toàn cho payload
         const rawPayload = data.payload || {};
         const safePayload: Record<string, string> = {};
 
@@ -233,7 +251,9 @@ export class FeedbackService {
         ];
 
         await this.firebaseService.messaging.sendEach(messages);
-        console.log(`[FCM] Đã bắn thông báo động theo status: ${data.Status}`);
+        console.log(
+          `[FCM] Đã bắn thông báo động theo status: ${updated.Status}`,
+        );
       } catch (e: any) {
         console.error('Lỗi khi gửi thông báo FCM cho User:', e.message);
       }
