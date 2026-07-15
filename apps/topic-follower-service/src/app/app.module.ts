@@ -5,13 +5,19 @@ import { CommonModule } from '@bus/common';
 import { APP_PIPE } from '@nestjs/core';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { MongooseModule } from '@nestjs/mongoose';
-import { TopicFollower, TopicFollowerSchema } from '@bus/models';
+import {
+  Topic,
+  TopicFollower,
+  TopicFollowerSchema,
+  TopicSchema,
+} from '@bus/models';
 
 @Module({
   imports: [
     CommonModule,
     MongooseModule.forFeature([
       { name: TopicFollower.name, schema: TopicFollowerSchema },
+      { name: Topic.name, schema: TopicSchema },
     ]),
   ],
   controllers: [AppController],
