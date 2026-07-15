@@ -10,7 +10,11 @@ import {
 } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
-import { CreateFeedbackDto, FeedbackStatus } from '@bus/models';
+import {
+  CreateFeedbackDto,
+  FeedbackStatus,
+  UpdateFeedbackDto,
+} from '@bus/models';
 import { FeedbackService } from './app.service';
 import { FeedbackImageService } from '../feedback-image/app.service';
 import { FirebaseService } from '@bus/common';
@@ -72,6 +76,10 @@ export class FeedbackController {
     };
   }
 
+  async create(@Body() body: CreateFeedbackDto) {
+    return await this.service.createWithNotification(body);
+  }
+
   @Get()
   async findAll(
     @Query('page') page: number,
@@ -91,33 +99,38 @@ export class FeedbackController {
     return this.service.findOne(id);
   }
 
+  // @Patch(':id')
+  // async update(
+  //   @Param('id') id: string,
+  //   @Body() data: Partial<CreateFeedbackDto>,
+  // ) {
+  //   const updatedFeedback = await this.service.update(id, data);
+
+  //   try {
+  //     if (
+  //       data.Status === FeedbackStatus.COMPLETED &&
+  //       updatedFeedback.deviceToken
+  //     ) {
+  //       const title = 'Phản hồi đã được giải quyết ✅';
+  //       const content =
+  //         'Vấn đề bạn phản ánh đã được hệ thống xử lý hoàn tất. Cảm ơn sự đóng góp của bạn!';
+
+  //       await this.firebaseService.sendNotificationToTokens(
+  //         [updatedFeedback.deviceToken],
+  //         title,
+  //         content,
+  //       );
+  //     }
+  //   } catch (error: any) {
+  //     console.error('Lỗi khi gửi thông báo FCM cho User:', error.message);
+  //   }
+
+  //   return updatedFeedback;
+  // }
+
   @Patch(':id')
-  async update(
-    @Param('id') id: string,
-    @Body() data: Partial<CreateFeedbackDto>,
-  ) {
-    const updatedFeedback = await this.service.update(id, data);
-
-    try {
-      if (
-        data.Status === FeedbackStatus.COMPLETED &&
-        updatedFeedback.deviceToken
-      ) {
-        const title = 'Phản hồi đã được giải quyết ✅';
-        const content =
-          'Vấn đề bạn phản ánh đã được hệ thống xử lý hoàn tất. Cảm ơn sự đóng góp của bạn!';
-
-        await this.firebaseService.sendNotificationToTokens(
-          [updatedFeedback.deviceToken],
-          title,
-          content,
-        );
-      }
-    } catch (error: any) {
-      console.error('Lỗi khi gửi thông báo FCM cho User:', error.message);
-    }
-
-    return updatedFeedback;
+  async update(@Param('id') id: string, @Body() data: UpdateFeedbackDto) {
+    return await this.service.updateWithNotification(id, data);
   }
 
   @Delete(':id')

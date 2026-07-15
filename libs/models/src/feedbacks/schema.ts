@@ -14,6 +14,7 @@ export enum FeedbackStatus {
   PENDING = 'PENDING',
   PROCESSING = 'PROCESSING',
   COMPLETED = 'COMPLETED',
+  REJECTED = 'REJECTED',
 }
 
 export class GeoLocation {

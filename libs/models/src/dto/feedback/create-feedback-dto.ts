@@ -11,9 +11,9 @@ const GeoLocationSchema = z.object({
 });
 
 export const CreateFeedbackZodSchema = z.object({
-  Category: z
-    .nativeEnum(FeedbackCategory, { message: 'Danh mục không hợp lệ' })
-    .default(FeedbackCategory.SUGGESTION),
+  Category: z.nativeEnum(FeedbackCategory, {
+    message: 'Danh mục không hợp lệ',
+  }),
 
   Content: z
     .string({ message: 'Nội dung không được để trống' })
@@ -50,3 +50,21 @@ export const CreateFeedbackZodSchema = z.object({
 
 export class CreateFeedbackDto extends createZodDto(CreateFeedbackZodSchema) {}
 export class GeoLocationDto extends createZodDto(GeoLocationSchema) {}
+
+const UpdateFeedbackSchema = z.object({
+  Status: z.string().optional(),
+
+  notificationTitle: z
+    .string()
+    .max(256, { message: 'Tiêu đề thông báo không được vượt quá 256 ký tự' })
+    .optional(),
+
+  notificationContent: z
+    .string()
+    .max(256, { message: 'Nội dung thông báo không được vượt quá 256 ký tự' })
+    .optional(),
+
+  payload: z.record(z.string(), z.any()).optional(),
+});
+
+export class UpdateFeedbackDto extends createZodDto(UpdateFeedbackSchema) {}

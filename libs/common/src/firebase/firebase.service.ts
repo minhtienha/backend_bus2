@@ -17,6 +17,11 @@ export class FirebaseService implements OnModuleInit {
     }
   }
 
+  // Tạo một getter để lấy messaging instance an toàn
+  get messaging() {
+    return getMessaging();
+  }
+
   async sendNotificationToTokens(
     tokens: string[],
     title: string,
@@ -26,14 +31,14 @@ export class FirebaseService implements OnModuleInit {
       return;
     }
 
-    const message = {
+    const messages = tokens.map((token) => ({
+      token: token,
       notification: { title, body },
-      tokens: tokens,
-    };
+    }));
 
     try {
-      const response = await getMessaging().sendEachForMulticast(message);
-      console.log(`Đã gửi FCM thành công: ${response.successCount} thiết bị.`);
+      await this.messaging.sendEach(messages);
+      console.log(`Đã gửi FCM thành công thiết bị.`);
     } catch (error) {
       console.error('Lỗi khi gửi thông báo FCM:', error);
     }
