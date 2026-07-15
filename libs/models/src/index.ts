@@ -6,3 +6,6 @@ export * from './feedback-images/index.js';
 export * from './location/index.js';
 export * from './timetable/index.js';
 export * from './user/index.js';
+export * from './topic/index.js';
+export * from './news/index.js';
+export * from './topic-follower/index.js';

@@ -1,0 +1,66 @@
+import { Injectable, Logger } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import {
+  News,
+  NewsDocument,
+  TopicFollower,
+  TopicFollowerDocument,
+  CreateNewsDto,
+} from '@bus/models';
+import { FirebaseService } from '@bus/common';
+
+@Injectable()
+export class AppService {
+  private readonly logger = new Logger(AppService.name);
+
+  constructor(
+    @InjectModel(News.name)
+    private readonly newsModel: Model<NewsDocument>,
+    @InjectModel(TopicFollower.name)
+    private readonly topicFollowerModel: Model<TopicFollowerDocument>,
+    private readonly firebaseService: FirebaseService,
+  ) {}
+
+  async createNews(dto: CreateNewsDto) {
+    const news = new this.newsModel(dto);
+    const savedNews = await news.save();
+
+    const followers = await this.topicFollowerModel
+      .find({ topicId: dto.topicId })
+      .select('deviceToken')
+      .lean();
+
+    const tokens = followers.map((f) => f.deviceToken).filter(Boolean);
+
+    if (tokens.length > 0) {
+      const messages = tokens.map((token) => ({
+        token: token,
+        notification: {
+          title: savedNews.title,
+          body: savedNews.content,
+        },
+        data: {
+          click_action: 'FLUTTER_NOTIFICATION_CLICK',
+          type: 'NEW_NEWS_ALERT',
+          topicId: String(savedNews.topicId),
+          newsId: String(savedNews._id),
+        },
+      }));
+
+      try {
+        await this.firebaseService.messaging.sendEach(messages);
+        this.logger.log(
+          `[FCM] Sent notifications to ${tokens.length} devices for news: ${savedNews._id}`,
+        );
+      } catch (error: any) {
+        this.logger.error(
+          `[FCM] Failed to send notifications: ${error.message}`,
+          error.stack,
+        );
+      }
+    }
+
+    return savedNews;
+  }
+}

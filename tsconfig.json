@@ -29,6 +29,24 @@
     },
     {
       "path": "./apps/users"
+    },
+    {
+      "path": "./apps/topic-service-e2e"
+    },
+    {
+      "path": "./apps/topic-service"
+    },
+    {
+      "path": "./apps/news-service-e2e"
+    },
+    {
+      "path": "./apps/news-service"
+    },
+    {
+      "path": "./apps/topic-follower-service-e2e"
+    },
+    {
+      "path": "./apps/topic-follower-service"
     }
   ],
   "compilerOptions": {
