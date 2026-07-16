@@ -4,7 +4,7 @@ import { z } from 'zod';
 // Định nghĩa Schema phụ cho object content
 const ContentSchema = z.object({
   kind: z.string().optional(),
-  url: z.string().url({ message: 'url không đúng định dạng' }),
+  url: z.string().url({ message: 'url không đúng định dạng' }).optional(),
   text: z.string().optional(),
 });
 
