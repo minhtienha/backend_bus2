@@ -31,10 +31,7 @@ export const CreateNewsSchema = z.object({
   content: ContentSchema,
 
   // 3. Đổi từ imageUrl thành image và thêm validate URL
-  imageUrl: z
-    .string({ message: 'image không được để trống' })
-    .trim()
-    .url({ message: 'Link ảnh không đúng định dạng URL' }),
+  imageUrl: z.string().optional(),
 });
 
 export class CreateNewsDto extends createZodDto(CreateNewsSchema) {}
