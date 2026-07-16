@@ -54,12 +54,12 @@ export class GeoLocationDto extends createZodDto(GeoLocationSchema) {}
 const UpdateFeedbackSchema = z.object({
   Status: z.string().optional(),
 
-  notificationTitle: z
+  Title: z
     .string()
     .max(256, { message: 'Tiêu đề thông báo không được vượt quá 256 ký tự' })
     .optional(),
 
-  notificationContent: z
+  Content: z
     .string()
     .max(256, { message: 'Nội dung thông báo không được vượt quá 256 ký tự' })
     .optional(),
