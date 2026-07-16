@@ -3,6 +3,15 @@ import mongoose, { Document } from 'mongoose';
 
 export type NewsDocument = News & Document;
 
+@Schema({ _id: false })
+class ContentStructure {
+  @Prop()
+  kind?: string;
+
+  @Prop()
+  url?: string;
+}
+
 @Schema({ timestamps: true })
 export class News {
   @Prop({
@@ -20,7 +29,7 @@ export class News {
   subtitle!: string;
 
   @Prop({ required: true })
-  content!: string;
+  content!: ContentStructure;
 
   @Prop()
   imageUrl?: string;
