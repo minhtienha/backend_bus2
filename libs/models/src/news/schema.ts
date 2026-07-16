@@ -10,6 +10,9 @@ class ContentStructure {
 
   @Prop()
   url?: string;
+
+  @Prop()
+  text?: string;
 }
 
 @Schema({ timestamps: true })
@@ -28,7 +31,7 @@ export class News {
   @Prop({ required: true })
   subtitle!: string;
 
-  @Prop({ required: true })
+  @Prop({ type: ContentStructure, required: true })
   content!: ContentStructure;
 
   @Prop()

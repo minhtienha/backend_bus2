@@ -4,7 +4,8 @@ import { z } from 'zod';
 // Định nghĩa Schema phụ cho object content
 const ContentSchema = z.object({
   kind: z.string().optional(),
-  url: z.string().url({ message: 'url không đúng định dạng' }), // Validate định dạng URL hợp lệ
+  url: z.string().url({ message: 'url không đúng định dạng' }),
+  text: z.string().optional(),
 });
 
 export const CreateNewsSchema = z.object({
