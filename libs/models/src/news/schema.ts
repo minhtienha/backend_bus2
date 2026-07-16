@@ -21,6 +21,9 @@ export class News {
 
   @Prop({ required: true })
   content!: string;
+
+  @Prop()
+  image?: string;
 }
 
 export const NewsSchema = SchemaFactory.createForClass(News);

@@ -200,9 +200,13 @@ export class FeedbackService {
   }
 
   async updateWithNotification(id: string, data: any) {
-    const updated = await this.model.findByIdAndUpdate(id, data, {
-      new: true,
-    });
+    const updated = await this.model.findByIdAndUpdate(
+      id,
+      { Content: data.notificationContent },
+      {
+        new: true,
+      },
+    );
 
     if (data.Status && updated?.deviceToken) {
       try {
