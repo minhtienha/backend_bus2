@@ -24,7 +24,7 @@ export const CreateNewsSchema = z.object({
     .min(1, 'content không được để trống')
     .max(256, 'content không được vượt quá 256 ký tự'),
 
-  image: z.string(),
+  imageUrl: z.string(),
 });
 
 export class CreateNewsDto extends createZodDto(CreateNewsSchema) {}
