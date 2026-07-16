@@ -26,6 +26,14 @@ export class AppService {
     private readonly firebaseService: FirebaseService,
   ) {}
 
+  async getNews() {
+    return await this.newsModel.find().lean();
+  }
+
+  async getOneNews(id: string) {
+    return await this.newsModel.findById(id).lean();
+  }
+
   async createNews(dto: CreateNewsDto) {
     const exisTopic = await this.topicModel.findById(dto.topicId);
     if (!exisTopic) {
