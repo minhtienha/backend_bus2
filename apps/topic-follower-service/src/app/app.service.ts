@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  HttpException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
@@ -31,7 +36,7 @@ export class AppService {
       deviceToken,
     });
     if (existing) {
-      return existing;
+      throw new ConflictException('Bạn đã theo dõi Topic này rồi');
     }
 
     const follower = new this.topicFollowerModel({

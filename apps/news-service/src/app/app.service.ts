@@ -31,6 +31,19 @@ export class AppService {
     if (!exisTopic) {
       throw new NotFoundException('Chủ đề (Topic) không tồn tại');
     }
+
+    const existingNews = await this.newsModel.findOne({
+      topicId: dto.topicId,
+      title: dto.title.trim(),
+    });
+
+    if (existingNews) {
+      console.log(
+        `[News] Phát hiện bài viết trùng tiêu đề trong cùng Topic. Tự động trả về bản ghi cũ.`,
+      );
+      return existingNews;
+    }
+
     const news = new this.newsModel(dto);
     const savedNews = await news.save();
 

@@ -221,7 +221,6 @@ export class FeedbackService {
             title = `Cập nhật trạng thái phản hồi: ${updated.Status}`;
         }
 
-        // Lấy content từ Postman truyền lên
         const content =
           data.notificationContent ||
           'Trạng thái phản hồi của bạn đã được thay đổi.';
