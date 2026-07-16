@@ -18,4 +18,8 @@ export class AppService {
   async getTopics() {
     return await this.topicModel.find().lean();
   }
+
+  async getOneTopic(id: string) {
+    return await this.topicModel.findById(id).lean();
+  }
 }
