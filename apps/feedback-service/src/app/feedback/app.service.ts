@@ -222,8 +222,7 @@ export class FeedbackService {
         }
 
         const content =
-          data.notificationContent ||
-          'Trạng thái phản hồi của bạn đã được thay đổi.';
+          data.Content || 'Trạng thái phản hồi của bạn đã được thay đổi.';
 
         // Xử lý ép kiểu chuỗi an toàn cho payload
         const rawPayload = data.payload || {};
