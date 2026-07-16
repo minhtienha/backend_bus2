@@ -26,7 +26,7 @@ export class AppController {
     return await this.appService.getTopics();
   }
 
-  @Get(':/id')
+  @Get(':id')
   @HttpCode(HttpStatus.OK)
   async getOneTopic(@Param('id') id: string) {
     return await this.appService.getOneTopic(id);
