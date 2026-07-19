@@ -1,12 +1,29 @@
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 
-// Định nghĩa Schema phụ cho object content
-const ContentSchema = z.object({
-  kind: z.string().optional(),
-  url: z.string().url({ message: 'url không đúng định dạng' }).optional(),
-  text: z.string().optional(),
-});
+const ContentSchema = z.discriminatedUnion('kind', [
+  // Kịch bản 1: Nếu kind là url thì bắt buộc có url hợp lệ, text sẽ tự động biến thành null thực sự
+  z.object({
+    kind: z.literal('url'),
+    url: z.string().url({ message: 'url không đúng định dạng' }),
+    text: z
+      .any()
+      .optional()
+      .transform(() => null),
+  }),
+
+  // Kịch bản 2: Nếu kind là text hoặc loại khác, bắt buộc có text, url sẽ tự động biến thành null thực sự
+  z.object({
+    kind: z.literal('text'),
+    text: z
+      .string()
+      .min(1, { message: 'Nội dung đoạn văn không được để trống' }),
+    url: z
+      .any()
+      .optional()
+      .transform(() => null),
+  }),
+]);
 
 export const CreateNewsSchema = z.object({
   topicId: z
@@ -22,17 +39,18 @@ export const CreateNewsSchema = z.object({
     .min(1, 'title không được để trống')
     .max(256, 'title không được vượt quá 256 ký tự'),
 
-  // 1. Đổi từ subtitle thành publishedAt để khớp với JSON
   subtitle: z
-    .string({ message: 'publishedAt không được để trống' })
+    .string({ message: 'subtitle không được để trống' })
     .trim()
-    .min(1, 'publishedAt không được để trống'),
+    .min(1, 'subtitle không được để trống'),
 
-  // 2. Chuyển content từ string thành một Object cụ thể
   content: ContentSchema,
 
-  // 3. Đổi từ imageUrl thành image và thêm validate URL
-  imageUrl: z.string().optional(),
+  imageUrl: z
+    .string()
+    .url({ message: 'imageUrl không đúng định dạng' })
+    .optional()
+    .or(z.literal('')),
 });
 
 export class CreateNewsDto extends createZodDto(CreateNewsSchema) {}

@@ -63,18 +63,35 @@ export class AppService {
     const tokens = followers.map((f) => f.deviceToken).filter(Boolean);
 
     if (tokens.length > 0) {
+      // 1. Xác định nội dung hiển thị (body) trên thanh thông báo điện thoại
+      const notificationBody =
+        savedNews.content.kind === 'url'
+          ? 'Nhấn để xem liên kết chi tiết bài viết.'
+          : savedNews.content.text || savedNews.subtitle;
+
+      // 2. Chuẩn bị data phẳng gửi kèm cho Flutter (loại bỏ null, ép kiểu string)
+      const fcmData: Record<string, string> = {
+        click_action: 'FLUTTER_NOTIFICATION_CLICK',
+        type: 'NEW_NEWS_ALERT',
+        topicId: String(savedNews.topicId),
+        newsId: String(savedNews._id),
+        contentKind: String(savedNews.content.kind),
+      };
+
+      // Bắn thêm data tùy thuộc vào kind (chỉ thêm nếu giá trị không phải null/undefined)
+      if (savedNews.content.kind === 'url' && savedNews.content.url) {
+        fcmData.contentUrl = String(savedNews.content.url);
+      } else if (savedNews.content.kind === 'text' && savedNews.content.text) {
+        fcmData.contentText = String(savedNews.content.text);
+      }
+
       const messages = tokens.map((token) => ({
         token: token,
         notification: {
           title: savedNews.title,
-          body: savedNews.content,
+          body: notificationBody, // Truyền chuỗi văn bản thuần vào đây
         },
-        data: {
-          click_action: 'FLUTTER_NOTIFICATION_CLICK',
-          type: 'NEW_NEWS_ALERT',
-          topicId: String(savedNews.topicId),
-          newsId: String(savedNews._id),
-        },
+        data: fcmData, // Truyền cục data sạch sẽ không dính chữ "null"
       }));
 
       try {
