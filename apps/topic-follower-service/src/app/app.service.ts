@@ -23,48 +23,24 @@ export class AppService {
     private readonly topicModel: Model<TopicDocument>,
   ) {}
 
-  async subscribe(dto: SubscribeTopicDto) {
-    const { topicId, deviceToken, userId } = dto;
-
-    const existingTopic = await this.topicModel.findById(topicId);
-    if (!existingTopic) {
-      throw new NotFoundException('Chủ đề (Topic) không tồn tại');
-    }
-
-    const existing = await this.topicFollowerModel.findOne({
-      topicId,
-      deviceToken,
-    });
-    if (existing) {
-      throw new ConflictException('Bạn đã theo dõi Topic này rồi');
-    }
-
-    return await this.topicFollowerModel.updateOne(
-      { userId, topicId }, // Điều kiện tìm kiếm
-      {
-        $set: { deviceToken }, // Nếu đã có, cập nhật lại token đề phòng token đổi
-      },
-      { upsert: true }, // Nếu chưa có thì tạo bản ghi mới
-    );
+  async subscribe(userId: string, dto: SubscribeTopicDto) {
+    return this.topicFollowerModel
+      .findOneAndUpdate(
+        { userId, topicId: dto.topicId },
+        { $set: { deviceToken: dto.deviceToken } },
+        { upsert: true, new: true },
+      )
+      .exec();
   }
 
   async unsubscribe(userId: string, topicId: string) {
-    // Xóa thẳng tay, không để lại dấu vết
-    const result = await this.topicFollowerModel.deleteOne({ userId, topicId });
-
-    if (result.deletedCount === 0) {
-      // Có thể quăng lỗi NotFoundException nếu thích chặt chẽ
-    }
-
-    return { success: true, message: 'Unsubscribed successfully' };
+    return this.topicFollowerModel.deleteOne({ userId, topicId }).exec();
   }
 
-  async getMySubscribedTopicIds(userId: string): Promise<string[]> {
-    const subscriptions = await this.topicFollowerModel
-      .find({ userId })
-      .select('topicId')
-      .lean();
-
-    return subscriptions.map((sub) => sub.topicId.toString());
+  async getSubscribedTopicIds(userId: string): Promise<string[]> {
+    const follows = await this.topicFollowerModel
+      .find({ userId }, 'topicId')
+      .exec();
+    return follows.map((f) => f.topicId.toString());
   }
 }

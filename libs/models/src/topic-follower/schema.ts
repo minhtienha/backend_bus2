@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document } from 'mongoose';
-import { string } from 'zod';
 
 export type TopicFollowerDocument = TopicFollower & Document;
 
@@ -17,8 +16,7 @@ export class TopicFollower {
   deviceToken!: string;
 
   @Prop({
-    type: string,
-    required: false,
+    required: true,
   })
   userId?: string;
 }
