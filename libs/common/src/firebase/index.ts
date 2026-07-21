@@ -1,2 +1,3 @@
-export * from './firebase.module.js';
-export * from './firebase.service.js';
+export * from './firebase.module';
+export * from './firebase.service';
+export * from './firebase-auth.guard'; // Thêm dòng này
