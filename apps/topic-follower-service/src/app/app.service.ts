@@ -39,17 +39,32 @@ export class AppService {
       throw new ConflictException('Bạn đã theo dõi Topic này rồi');
     }
 
-    const follower = new this.topicFollowerModel({
-      topicId,
-      deviceToken,
-      userId,
-    });
-    return await follower.save();
+    return await this.topicFollowerModel.updateOne(
+      { userId, topicId }, // Điều kiện tìm kiếm
+      {
+        $set: { deviceToken }, // Nếu đã có, cập nhật lại token đề phòng token đổi
+      },
+      { upsert: true }, // Nếu chưa có thì tạo bản ghi mới
+    );
   }
 
-  async unsubscribe(dto: SubscribeTopicDto) {
-    const { topicId, deviceToken } = dto;
-    await this.topicFollowerModel.deleteOne({ topicId, deviceToken });
+  async unsubscribe(userId: string, topicId: string) {
+    // Xóa thẳng tay, không để lại dấu vết
+    const result = await this.topicFollowerModel.deleteOne({ userId, topicId });
+
+    if (result.deletedCount === 0) {
+      // Có thể quăng lỗi NotFoundException nếu thích chặt chẽ
+    }
+
     return { success: true, message: 'Unsubscribed successfully' };
+  }
+
+  async getMySubscribedTopicIds(userId: string): Promise<string[]> {
+    const subscriptions = await this.topicFollowerModel
+      .find({ userId })
+      .select('topicId')
+      .lean();
+
+    return subscriptions.map((sub) => sub.topicId.toString());
   }
 }

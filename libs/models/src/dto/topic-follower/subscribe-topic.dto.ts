@@ -12,13 +12,7 @@ export const SubscribeTopicSchema = z.object({
     .string({ message: 'deviceToken không được để trống' })
     .trim()
     .min(1, 'deviceToken không được để trống'),
-  userId: z
-    .string()
-    .trim()
-    .regex(/^[0-9a-fA-F]{24}$/, {
-      message: 'userId phải là định dạng ObjectId hợp lệ',
-    })
-    .optional(),
+  userId: z.string().optional(),
 });
 
 export class SubscribeTopicDto extends createZodDto(SubscribeTopicSchema) {}
