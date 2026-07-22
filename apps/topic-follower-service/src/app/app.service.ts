@@ -28,10 +28,12 @@ export class AppService {
     return this.topicFollowerModel.deleteOne({ userId, topicId }).exec();
   }
 
-  async getSubscribedTopicIds(userId: string): Promise<string[]> {
+  async getSubscribedTopics(userId: string): Promise<any[]> {
     const follows = await this.topicFollowerModel
-      .find({ userId }, 'topicId')
+      .find({ userId })
+      .populate('topicId')
       .exec();
-    return follows.map((f) => f.topicId.toString());
+
+    return follows.filter((f) => f.topicId != null).map((f) => f.topicId);
   }
 }
