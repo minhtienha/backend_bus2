@@ -4,6 +4,8 @@ import {
   TopicFollower,
   TopicFollowerDocument,
   SubscribeTopicDto,
+  Topic,
+  TopicDocument,
 } from '@bus/models';
 import { Injectable } from '@nestjs/common';
 
@@ -12,6 +14,8 @@ export class AppService {
   constructor(
     @InjectModel(TopicFollower.name)
     private readonly topicFollowerModel: Model<TopicFollowerDocument>,
+    @InjectModel(Topic.name)
+    private readonly topicModel: Model<TopicDocument>,
   ) {}
 
   async subscribe(userId: string, dto: SubscribeTopicDto) {
@@ -35,5 +39,28 @@ export class AppService {
       .exec();
 
     return follows.filter((f) => f.topicId != null).map((f) => f.topicId);
+  }
+
+  async getTopicsWithSubscriptionStatus(userId: string) {
+    const allTopics = await this.topicModel.find().lean().exec();
+
+    const userSubscriptions = await this.topicFollowerModel
+      .find({ userId })
+      .select('topicId')
+      .lean()
+      .exec();
+
+    const subscribedTopicIds = new Set(
+      userSubscriptions.map((sub) => sub.topicId.toString()),
+    );
+
+    const result = allTopics.map((topic) => {
+      return {
+        ...topic,
+        isSubscribed: subscribedTopicIds.has(topic._id.toString()),
+      };
+    });
+
+    return result;
   }
 }

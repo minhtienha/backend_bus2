@@ -50,4 +50,11 @@ export class AppController {
       throw new UnauthorizedException('Không tìm thấy thông tin User');
     return this.appService.unsubscribe(userId, topicId);
   }
+
+  @Get('topics')
+  async getTopicsWithStatus(@Req() req: any) {
+    const userId = req.user.user_id;
+
+    return this.appService.getTopicsWithSubscriptionStatus(userId);
+  }
 }
