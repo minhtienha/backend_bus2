@@ -6,10 +6,12 @@ import { APP_PIPE } from '@nestjs/core';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { MongooseModule } from '@nestjs/mongoose';
 import { TopicFollower, TopicFollowerSchema } from '@bus/models';
+import { FirebaseModule } from '@bus/common';
 
 @Module({
   imports: [
     CommonModule,
+    FirebaseModule,
     MongooseModule.forFeature([
       { name: TopicFollower.name, schema: TopicFollowerSchema },
     ]),
