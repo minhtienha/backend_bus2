@@ -5,7 +5,7 @@ import { CommonModule } from '@bus/common';
 import { APP_PIPE } from '@nestjs/core';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { MongooseModule } from '@nestjs/mongoose';
-import { TopicFollower, TopicFollowerSchema } from '@bus/models';
+import { Topic, TopicFollower, TopicFollowerSchema, TopicSchema } from '@bus/models';
 import { FirebaseModule } from '@bus/common';
 
 @Module({
