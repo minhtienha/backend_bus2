@@ -28,7 +28,7 @@ export class AppController {
 
     if (!userId)
       throw new UnauthorizedException('Không tìm thấy thông tin User');
-    return this.appService.getSubscribedTopicIds(userId);
+    return this.appService.getSubscribedTopics(userId);
   }
 
   // 2. POST: Đăng ký theo dõi
