@@ -14,6 +14,7 @@ import { FirebaseModule } from '@bus/common';
     FirebaseModule,
     MongooseModule.forFeature([
       { name: TopicFollower.name, schema: TopicFollowerSchema },
+      { name: Topic.name, schema: TopicSchema },
     ]),
   ],
   controllers: [AppController],
