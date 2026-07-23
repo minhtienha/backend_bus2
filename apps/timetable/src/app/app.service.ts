@@ -63,7 +63,7 @@ export class AppService {
       .padStart(2, '0')}`;
   }
 
-  async getTimeBusTo(id: number, variant: number): Promise<number> {
+  async getTimeBusTo(id: number, variant: number): Promise<any> {
     const scheduleList = await this.getTimeTable(id, variant);
 
     if (!scheduleList || scheduleList.length === 0) {
@@ -88,7 +88,18 @@ export class AppService {
       const tripStartMinutes = this.timeToMinutes(trip.start);
 
       if (tripStartMinutes >= currentTimeInMinutes) {
-        return tripStartMinutes - currentTimeInMinutes;
+        const eta = tripStartMinutes - currentTimeInMinutes;
+
+        if (eta <= 1) {
+          return {
+            eta: eta,
+            licensePlate: trip.licensePlate || '51B-123.45',
+          };
+        }
+
+        return {
+          eta: eta,
+        };
       }
     }
 
