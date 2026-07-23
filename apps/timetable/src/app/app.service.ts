@@ -62,4 +62,36 @@ export class AppService {
       .toString()
       .padStart(2, '0')}`;
   }
+
+  async getTimeBusTo(id: number, variant: number): Promise<number> {
+    const scheduleList = await this.getTimeTable(id, variant);
+
+    if (!scheduleList || scheduleList.length === 0) {
+      throw new HttpException(
+        'Không có lịch trình cho tuyến xe này',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const now = new Date();
+
+    const vnTime = new Date(
+      now.toLocaleString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' }),
+    );
+
+    const currentHour = vnTime.getHours();
+    const currentMinute = vnTime.getMinutes();
+
+    const currentTimeInMinutes = currentHour * 60 + currentMinute;
+
+    for (const trip of scheduleList) {
+      const tripStartMinutes = this.timeToMinutes(trip.start);
+
+      if (tripStartMinutes >= currentTimeInMinutes) {
+        return tripStartMinutes - currentTimeInMinutes;
+      }
+    }
+
+    return -1;
+  }
 }

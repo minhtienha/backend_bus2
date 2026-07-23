@@ -12,4 +12,16 @@ export class AppController {
   ) {
     return this.appService.getTimeTable(id, variant);
   }
+
+  @Get(':id/:var/eta')
+  async getTimeBusTo(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('var', ParseIntPipe) variant: number,
+  ) {
+    const minutesLeft = await this.appService.getTimeBusTo(id, variant);
+
+    return {
+      eta: minutesLeft,
+    };
+  }
 }
