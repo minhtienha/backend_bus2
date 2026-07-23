@@ -93,7 +93,7 @@ export class AppService {
         if (eta <= 1) {
           return {
             eta: eta,
-            licensePlate: trip.licensePlate || '51B-123.45',
+            licensePlate: '51B-123.45',
           };
         }
 

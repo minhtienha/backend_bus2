@@ -18,10 +18,6 @@ export class AppController {
     @Param('id', ParseIntPipe) id: number,
     @Param('var', ParseIntPipe) variant: number,
   ) {
-    const minutesLeft = await this.appService.getTimeBusTo(id, variant);
-
-    return {
-      eta: minutesLeft,
-    };
+    return await this.appService.getTimeBusTo(id, variant);
   }
 }
