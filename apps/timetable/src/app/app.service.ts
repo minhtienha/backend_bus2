@@ -88,17 +88,9 @@ export class AppService {
       const tripStartMinutes = this.timeToMinutes(trip.start);
 
       if (tripStartMinutes >= currentTimeInMinutes) {
-        const eta = tripStartMinutes - currentTimeInMinutes;
-
-        if (eta <= 1) {
-          return {
-            eta: eta,
-            licensePlate: '51B-123.45',
-          };
-        }
-
         return {
-          eta: eta,
+          eta: tripStartMinutes - currentTimeInMinutes,
+          licensePlate: '51B-123.45',
         };
       }
     }
